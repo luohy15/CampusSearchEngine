@@ -23,26 +23,26 @@ public class ImageSearcher {
 	private IndexReader reader;
 	private IndexSearcher searcher;
 	private Analyzer analyzer;
-	private float avgLength=1.0f;
-	
-	public ImageSearcher(String indexdir){
+	private float avgLength = 1.0f;
+
+	public ImageSearcher(String indexdir) {
 		analyzer = new IKAnalyzer();
-		try{
+		try {
 			reader = IndexReader.open(FSDirectory.open(new File(indexdir)));
 			searcher = new IndexSearcher(reader);
 			searcher.setSimilarity(new SimpleSimilarity());
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public TopDocs searchQuery(String queryString,String field,int maxnum){
+
+	public TopDocs searchQuery(String queryString, String field, int maxnum) {
 		try {
-			Term term=new Term(field,queryString);
-			Query query=new SimpleQuery(term,avgLength);
+			Term term = new Term(field, queryString);
+			Query query = new SimpleQuery(term, avgLength);
 			query.setBoost(1.0f);
-			//Weight w=searcher.createNormalizedWeight(query);
-			//System.out.println(w.getClass());
+			// Weight w=searcher.createNormalizedWeight(query);
+			// System.out.println(w.getClass());
 			TopDocs results = searcher.search(query, maxnum);
 			System.out.println(results);
 			return results;
@@ -51,42 +51,41 @@ public class ImageSearcher {
 		}
 		return null;
 	}
-	
-	public Document getDoc(int docID){
-		try{
+
+	public Document getDoc(int docID) {
+		try {
 			return searcher.doc(docID);
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	public void loadGlobals(String filename){
-		try{
+
+	public void loadGlobals(String filename) {
+		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
-			String line=reader.readLine();
-			avgLength=Float.parseFloat(line);
+			String line = reader.readLine();
+			avgLength = Float.parseFloat(line);
 			reader.close();
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public float getAvg(){
+
+	public float getAvg() {
 		return avgLength;
 	}
-	
-	public static void main(String[] args){
-		ImageSearcher search=new ImageSearcher("forIndex/index");
+
+	public static void main(String[] args) {
+		ImageSearcher search = new ImageSearcher("forIndex/index");
 		search.loadGlobals("forIndex/global.txt");
-		System.out.println("avg length = "+search.getAvg());
-		
-		TopDocs results=search.searchQuery("ËÎ×æµÂ", "abstract", 100);
+		System.out.println("avg length = " + search.getAvg());
+
+		TopDocs results = search.searchQuery("å®‹ç¥–å¾·", "abstract", 100);
 		ScoreDoc[] hits = results.scoreDocs;
 		for (int i = 0; i < hits.length; i++) { // output raw format
 			Document doc = search.getDoc(hits[i].doc);
-			System.out.println("doc=" + hits[i].doc + " score="
-					+ hits[i].score+" picPath= "+doc.get("picPath"));
+			System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score + " picPath= " + doc.get("abstract"));
 		}
 	}
 }
