@@ -2,17 +2,16 @@
 import org.apache.lucene.index.FieldInvertState;
 import org.apache.lucene.search.Similarity;
 
-
 public class SimpleSimilarity extends Similarity {
 
 	@Override
 	public float computeNorm(String field, FieldInvertState state) {
 		final int numTerms;
-	    if (discountOverlaps)
-	      numTerms = state.getLength() - state.getNumOverlap();
-	    else
-	      numTerms = state.getLength();
-	    return state.getBoost() * ((float) (1.0 / Math.sqrt(numTerms)));
+		if (discountOverlaps)
+			numTerms = state.getLength() - state.getNumOverlap();
+		else
+			numTerms = state.getLength();
+		return state.getBoost() * ((float) (1.0 / Math.sqrt(numTerms)));
 	}
 
 	@Override
