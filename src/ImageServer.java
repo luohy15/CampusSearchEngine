@@ -88,6 +88,7 @@ public class ImageServer extends HttpServlet {
 			request.setAttribute("titles", titles);
 			request.setAttribute("urls", urls);
 			request.setAttribute("bodies", bodies);
+			request.setAttribute("totDocs", results.scoreDocs.length);
 			request.getRequestDispatcher("/imageshow.jsp").forward(request, response);
 		}
 	}

@@ -169,10 +169,13 @@ body {
 		<hr/>
   		<%}; %>
   	<%}else{ %>
-  		<h3>no such result</h3>
+  		<h3>No result? Consider another keyword, what about "清华"</h3>
   	<%}; %>
 
 
+ <% 
+  	int totDocs=(int) request.getAttribute("totDocs");
+  	if (totDocs > 10) { // bad hardcode %>
   	<p>
 		<%if(currentPage>1){ %>
 			<a href="ImageServer?query=<%=currentQuery%>&page=<%=currentPage-1%>">上一页</a>
@@ -186,7 +189,7 @@ body {
 		<%}; %>
 		<a href="ImageServer?query=<%=currentQuery%>&page=<%=currentPage+1%>">下一页</a>
 	</p>
-
+<% } %>
 
 
 
