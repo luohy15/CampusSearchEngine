@@ -18,7 +18,7 @@ import java.io.*;
 
 public class ImageServer extends HttpServlet {
 	public static final int PAGE_RESULT = 10;
-	public static final String indexDir = "forIndex";
+	public static final String indexDir = "/home/fuck/hw3/tomcat/bin";
 	public static final String picDir = "";
 	private ImageSearcher search = null;
 
@@ -60,18 +60,17 @@ public class ImageServer extends HttpServlet {
 			System.out.println(URLDecoder.decode(queryString, "gb2312"));
 			String[] tags = null;
 			String[] paths = null;
-			TopDocs results = search.searchQuery(queryString, "abstract", 100);
+			TopDocs results = search.searchQuery(queryString, 100);
+			String[] titles = null;
 			if (results != null) {
 				ScoreDoc[] hits = showList(results.scoreDocs, page);
 				if (hits != null) {
-					tags = new String[hits.length];
-					paths = new String[hits.length];
+					titles = new String[hits.length];
 					for (int i = 0; i < hits.length && i < PAGE_RESULT; i++) {
 						Document doc = search.getDoc(hits[i].doc);
-						System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score + " picPath= "
-								+ doc.get("picPath") + " tag= " + doc.get("abstract"));
-						tags[i] = doc.get("abstract");
-						paths[i] = picDir + doc.get("picPath");
+						System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score + " title= "
+								+ doc.get("title"));
+						titles[i] = doc.get("title");
 					}
 
 				} else {
@@ -82,8 +81,7 @@ public class ImageServer extends HttpServlet {
 			}
 			request.setAttribute("currentQuery", queryString);
 			request.setAttribute("currentPage", page);
-			request.setAttribute("imgTags", tags);
-			request.setAttribute("imgPaths", paths);
+			request.setAttribute("titles", titles);
 			request.getRequestDispatcher("/imageshow.jsp").forward(request, response);
 		}
 	}

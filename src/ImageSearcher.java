@@ -60,12 +60,12 @@ public class ImageSearcher {
 		return rv;
 	}
 
-	public TopDocs searchQuery(String queryString, String field, int maxnum) {
+	public TopDocs searchQuery(String queryString, int maxnum) {
 		try {
-			Term term = new Term(field, queryString);
+			Term term = new Term("title", queryString);
 			Query query;
 			if (SEGMENT_QUERY) {
-				query = genMultiFieldBM25Query(field, queryString);
+				query = genMultiFieldBM25Query("title", queryString);
 			} else if (USE_BM25_SCORER) {
 				query = new SimpleQuery(term, avgLength);
 				((SimpleQuery) query).setImageSearcher(this);
@@ -73,6 +73,7 @@ public class ImageSearcher {
 				query = new TermQuery(term);
 			}
 			query.setBoost(1.0f);
+			if (searcher == null) System.out.println("searcher null");
 			TopDocs results = searcher.search(query, maxnum);
 			System.out.println(results + " " + results.totalHits);
 			return results;
@@ -111,7 +112,7 @@ public class ImageSearcher {
 		search.loadGlobals("forIndex/global.txt");
 		System.out.println("avg length = " + search.getAvg());
 
-		TopDocs results = search.searchQuery("清华", "title", 100);
+		TopDocs results = search.searchQuery("清华", 100);
 		ScoreDoc[] hits = results.scoreDocs;
 		for (int i = 0; i < hits.length; i++) { // output raw format
 			Document doc = search.getDoc(hits[i].doc);
