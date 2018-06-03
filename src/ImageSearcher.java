@@ -26,7 +26,8 @@ public class ImageSearcher {
 	private IndexReader reader;
 	private IndexSearcher searcher;
 	private Analyzer analyzer;
-	private float avgLength = 1.0f;
+	private float avgTitleLen = 1.0f;
+	private float avgBodyLen = 1.0f;
 
 	private static final boolean USE_BM25_SCORER = true;
 	private static final boolean SEGMENT_QUERY = true;
@@ -42,7 +43,7 @@ public class ImageSearcher {
 		}
 	}
 
-	private Query genMultiFieldBM25Query(String field, String text) throws IOException {
+	private Query genMultiFieldBM25Query(String text) throws IOException {
 		Analyzer analyzer = new IKAnalyzer();
 		StringReader reader = new StringReader(text);
 		TokenStream ts = analyzer.tokenStream("", reader);
@@ -51,7 +52,10 @@ public class ImageSearcher {
 		while (ts.incrementToken()) {
 			String qs = term.toString();
 			System.out.println("QS.MUST: " + qs);
-			SimpleQuery sq = new SimpleQuery(new Term(field, qs), avgLength);
+			SimpleQuery sq = new SimpleQuery(new Term("body", qs), avgTitleLen);
+			sq.setImageSearcher(this);
+			rv.add(sq, BooleanClause.Occur.SHOULD);
+			sq = new SimpleQuery(new Term("title", qs), avgTitleLen);
 			sq.setImageSearcher(this);
 			rv.add(sq, BooleanClause.Occur.MUST);
 		}
@@ -62,12 +66,12 @@ public class ImageSearcher {
 
 	public TopDocs searchQuery(String queryString, int maxnum) {
 		try {
-			Term term = new Term("title", queryString);
+			Term term = new Term(queryString);
 			Query query;
 			if (SEGMENT_QUERY) {
-				query = genMultiFieldBM25Query("title", queryString);
+				query = genMultiFieldBM25Query(queryString);
 			} else if (USE_BM25_SCORER) {
-				query = new SimpleQuery(term, avgLength);
+				query = new SimpleQuery(term, avgTitleLen);
 				((SimpleQuery) query).setImageSearcher(this);
 			} else {
 				query = new TermQuery(term);
@@ -96,21 +100,20 @@ public class ImageSearcher {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
 			String line = reader.readLine();
-			avgLength = Float.parseFloat(line);
+			avgTitleLen = Float.parseFloat(line);
+			System.out.println("INFO loading avgTitleLen: " + avgTitleLen);
+			line = reader.readLine();
+			avgBodyLen = Float.parseFloat(line);
+			System.out.println("INFO loading avgBodyLen: " + avgBodyLen);
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public float getAvg() {
-		return avgLength;
-	}
-
 	public static void main(String[] args) {
 		ImageSearcher search = new ImageSearcher("forIndex/index");
 		search.loadGlobals("forIndex/global.txt");
-		System.out.println("avg length = " + search.getAvg());
 
 		TopDocs results = search.searchQuery("清华", 100);
 		ScoreDoc[] hits = results.scoreDocs;

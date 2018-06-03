@@ -136,11 +136,9 @@ final class SimpleScorer extends Scorer {
 	@Override
 	public float score() {
 		assert doc != -1;
-		// TODO: implements BM25 ranking algorithm
 		float norm = getSimilarity().decodeNorm(norms[doc]);
 		float length = 1 / (norm * norm);
 		float score = idf * (freq * (K1+1) / (freq + K1 * (1 - b + b * length / avgLength)));
-		// return idf * this.termDocs.freq();
 		return score;
 	}
 
