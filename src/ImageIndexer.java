@@ -72,6 +72,11 @@ public class ImageIndexer {
 				Field.Index.ANALYZED);
 		bodyField.setBoost(BODY_BOOST);
 		document.add(bodyField);
+		// title field
+		String urlString = attrs.getNamedItem("url").getNodeValue();
+		Field urlField = new Field("url", urlString, Field.Store.YES,
+				Field.Index.NO);
+		document.add(urlField);
 		// page rank boost
 		float pr = Float.parseFloat(attrs.getNamedItem("pr").getNodeValue());
 		document.setBoost(pr2docBoost(pr));

@@ -119,7 +119,8 @@ public class ImageSearcher {
 		ScoreDoc[] hits = results.scoreDocs;
 		for (int i = 0; i < hits.length; i++) { // output raw format
 			Document doc = search.getDoc(hits[i].doc);
-			System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score + " title= " + doc.get("title"));
+			System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score
+					+ " title= " + doc.get("title") + " url= " + doc.get("url"));
 		}
 	}
 }

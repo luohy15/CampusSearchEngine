@@ -58,19 +58,20 @@ public class ImageServer extends HttpServlet {
 			System.out.println(queryString);
 			System.out.println(URLDecoder.decode(queryString, "utf-8"));
 			System.out.println(URLDecoder.decode(queryString, "gb2312"));
-			String[] tags = null;
-			String[] paths = null;
 			TopDocs results = search.searchQuery(queryString, 100);
 			String[] titles = null;
+			String[] urls = null;
 			if (results != null) {
 				ScoreDoc[] hits = showList(results.scoreDocs, page);
 				if (hits != null) {
 					titles = new String[hits.length];
+					urls = new String[hits.length];
 					for (int i = 0; i < hits.length && i < PAGE_RESULT; i++) {
 						Document doc = search.getDoc(hits[i].doc);
 						System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score + " title= "
-								+ doc.get("title"));
+								+ doc.get("title") + " url= " + doc.get("url"));
 						titles[i] = doc.get("title");
+						urls[i] = doc.get("url");
 					}
 
 				} else {
@@ -82,6 +83,7 @@ public class ImageServer extends HttpServlet {
 			request.setAttribute("currentQuery", queryString);
 			request.setAttribute("currentPage", page);
 			request.setAttribute("titles", titles);
+			request.setAttribute("urls", urls);
 			request.getRequestDispatcher("/imageshow.jsp").forward(request, response);
 		}
 	}
