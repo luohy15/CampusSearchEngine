@@ -1,0 +1,8 @@
+id.txt
+
+lineno		content
+1 		id
+2		url
+3		out-edge target ids, space seperated
+4		title
+5		content, newlines removed

@@ -14,6 +14,11 @@ import org.apache.lucene.util.*;
 public class SimpleQuery extends Query {
 	private Term term;
 	private float avgLength;
+	private ImageSearcher imageSearcher;
+
+	public void setImageSearcher(ImageSearcher s) {
+		this.imageSearcher = s;
+	}
 
 	private class SimpleWeight extends Weight {
 		private float avgLength;
@@ -26,8 +31,7 @@ public class SimpleQuery extends Query {
 		private IDFExplanation idfExp;
 		private final Set<Integer> hash;
 
-		public SimpleWeight(Searcher searcher, float avg)
-				throws IOException {
+		public SimpleWeight(Searcher searcher, float avg) throws IOException {
 			this.avgLength = avg;
 			this.search = searcher;
 			this.similarity = getSimilarity(searcher);
@@ -37,8 +41,7 @@ public class SimpleQuery extends Query {
 				final int dfSum[] = new int[1];
 				new ReaderUtil.Gather(ir) {
 					@Override
-					protected void add(int base, IndexReader r)
-							throws IOException {
+					protected void add(int base, IndexReader r) throws IOException {
 						int df = r.docFreq(term);
 						dfSum[0] += df;
 						if (df > 0) {
@@ -85,12 +88,10 @@ public class SimpleQuery extends Query {
 		}
 
 		@Override
-		public Scorer scorer(IndexReader reader, boolean scoreDocsInOrder,
-				boolean topScorer) throws IOException {
+		public Scorer scorer(IndexReader reader, boolean scoreDocsInOrder, boolean topScorer) throws IOException {
 			// only use the early exit condition if we have an atomic reader,
 			// because Lucene 3.x still supports non-atomic readers here:
-			if (hash != null && reader.getSequentialSubReaders() == null
-					&& !hash.contains(reader.hashCode())) {
+			if (hash != null && reader.getSequentialSubReaders() == null && !hash.contains(reader.hashCode())) {
 				return null;
 			}
 
@@ -99,24 +100,21 @@ public class SimpleQuery extends Query {
 			if (termDocs == null)
 				return null;
 
-			return new SimpleScorer(this, termDocs, similarity, reader
-					.norms(term.field()), idf,avgLength);
+			return new SimpleScorer(this, termDocs, similarity, reader.norms(term.field()), idf, avgLength,
+					imageSearcher);
 		}
 
 		@Override
-		public Explanation explain(IndexReader reader, int doc)
-				throws IOException {
+		public Explanation explain(IndexReader reader, int doc) throws IOException {
 
 			ComplexExplanation result = new ComplexExplanation();
-			result.setDescription("weight(" + getQuery() + " in " + doc
-					+ "), product of:");
+			result.setDescription("weight(" + getQuery() + " in " + doc + "), product of:");
 
 			Explanation expl = new Explanation(idf, idfExp.explain());
 
 			// explain query weight
 			Explanation queryExpl = new Explanation();
-			queryExpl.setDescription("queryWeight(" + getQuery()
-					+ "), product of:");
+			queryExpl.setDescription("queryWeight(" + getQuery() + "), product of:");
 
 			Explanation boostExpl = new Explanation(getBoost(), "boost");
 			if (getBoost() != 1.0f)
@@ -126,16 +124,14 @@ public class SimpleQuery extends Query {
 			Explanation queryNormExpl = new Explanation(queryNorm, "queryNorm");
 			queryExpl.addDetail(queryNormExpl);
 
-			queryExpl.setValue(boostExpl.getValue() * expl.getValue()
-					* queryNormExpl.getValue());
+			queryExpl.setValue(boostExpl.getValue() * expl.getValue() * queryNormExpl.getValue());
 
 			result.addDetail(queryExpl);
 
 			// explain field weight
 			String field = term.field();
 			ComplexExplanation fieldExpl = new ComplexExplanation();
-			fieldExpl.setDescription("fieldWeight(" + term + " in " + doc
-					+ "), product of:");
+			fieldExpl.setDescription("fieldWeight(" + term + " in " + doc + "), product of:");
 
 			Explanation tfExplanation = new Explanation();
 			int tf = 0;
@@ -149,8 +145,7 @@ public class SimpleQuery extends Query {
 					termDocs.close();
 				}
 				tfExplanation.setValue(similarity.tf(tf));
-				tfExplanation.setDescription("tf(termFreq(" + term + ")=" + tf
-						+ ")");
+				tfExplanation.setDescription("tf(termFreq(" + term + ")=" + tf + ")");
 			} else {
 				tfExplanation.setValue(0.0f);
 				tfExplanation.setDescription("no matching term");
@@ -160,16 +155,13 @@ public class SimpleQuery extends Query {
 
 			Explanation fieldNormExpl = new Explanation();
 			byte[] fieldNorms = reader.norms(field);
-			float fieldNorm = fieldNorms != null ? similarity
-					.decodeNormValue(fieldNorms[doc]) : 1.0f;
+			float fieldNorm = fieldNorms != null ? similarity.decodeNormValue(fieldNorms[doc]) : 1.0f;
 			fieldNormExpl.setValue(fieldNorm);
-			fieldNormExpl.setDescription("fieldNorm(field=" + field + ", doc="
-					+ doc + ")");
+			fieldNormExpl.setDescription("fieldNorm(field=" + field + ", doc=" + doc + ")");
 			fieldExpl.addDetail(fieldNormExpl);
 
 			fieldExpl.setMatch(Boolean.valueOf(tfExplanation.isMatch()));
-			fieldExpl.setValue(tfExplanation.getValue() * expl.getValue()
-					* fieldNormExpl.getValue());
+			fieldExpl.setValue(tfExplanation.getValue() * expl.getValue() * fieldNormExpl.getValue());
 
 			result.addDetail(fieldExpl);
 			result.setMatch(fieldExpl.getMatch());
@@ -185,9 +177,9 @@ public class SimpleQuery extends Query {
 	}
 
 	/** Constructs a query for the term <code>t</code>. */
-	public SimpleQuery(Term t,float avg) {
+	public SimpleQuery(Term t, float avg) {
 		term = t;
-		avgLength=avg;
+		avgLength = avg;
 	}
 
 	/** Returns the term of this query. */
@@ -197,7 +189,7 @@ public class SimpleQuery extends Query {
 
 	@Override
 	public Weight createWeight(Searcher searcher) throws IOException {
-		return new SimpleWeight(searcher,avgLength);
+		return new SimpleWeight(searcher, avgLength);
 	}
 
 	@Override
@@ -224,8 +216,7 @@ public class SimpleQuery extends Query {
 		if (!(o instanceof SimpleQuery))
 			return false;
 		SimpleQuery other = (SimpleQuery) o;
-		return (this.getBoost() == other.getBoost())
-				&& this.term.equals(other.term);
+		return (this.getBoost() == other.getBoost()) && this.term.equals(other.term);
 	}
 
 	/** Returns a hash code value for this object. */

@@ -62,13 +62,14 @@ String imagePath = request.getScheme()+"://"+request.getServerName()+":"+request
   <br>
   <Table style="left: 0px; width: 594px;">
   <% 
-  	String[] imgTags=(String[]) request.getAttribute("imgTags");
-  	String[] imgPaths=(String[]) request.getAttribute("imgPaths");
+  	String[] imgTags=(String[]) request.getAttribute("titles");
+  	String[] urls = (String[]) request.getAttribute("urls");
+  	String[] bodies = (String[]) request.getAttribute("bodies");
   	if(imgTags!=null && imgTags.length>0){
   		for(int i=0;i<imgTags.length;i++){%>
   		<p>
-  		<tr><h3><%=(currentPage-1)*10+i+1%>. <%=imgTags[i] %></h3></tr>
-  		<tr><img src="<%=imagePath+imgPaths[i]%>" alt="<%=imagePath+imgPaths[i]%>" width=200 height=100 /></tr>
+  		<tr><h3><%=(currentPage-1)*10+i+1%>. <%=imgTags[i] %> <a href="<%=urls[i]%>">链接</a></h3></tr>
+  		<%=bodies[i] %>
   		</p>
   		<%}; %>
   	<%}else{ %>

@@ -28,6 +28,8 @@ final class SimpleScorer extends Scorer {
 	private float K1 = 2.0f;
 	private float b = 0.75f;
 
+	private ImageSearcher imgsrcher = null;
+
 	public void setBM25Params(float aveParam) {
 		avgLength = aveParam;
 	}
@@ -52,8 +54,8 @@ final class SimpleScorer extends Scorer {
 	 *            The field norms of the document fields for the
 	 *            <code>Term</code>.
 	 */
-	SimpleScorer(Weight weight, TermDocs td, Similarity similarity,
-			byte[] norms, float idfValue, float avg) {
+	SimpleScorer(Weight weight, TermDocs td, Similarity similarity, byte[] norms, float idfValue, float avg,
+			ImageSearcher imgsrcher) {
 		super(similarity, weight);
 
 		this.termDocs = td;
@@ -61,6 +63,7 @@ final class SimpleScorer extends Scorer {
 		this.weightValue = weight.getValue();
 		this.idf = idfValue;
 		this.avgLength = avg;
+		this.imgsrcher = imgsrcher;
 
 		for (int i = 0; i < SCORE_CACHE_SIZE; i++)
 			scoreCache[i] = getSimilarity().tf(i) * weightValue;
@@ -73,8 +76,7 @@ final class SimpleScorer extends Scorer {
 
 	// firstDocID is ignored since nextDoc() sets 'doc'
 	@Override
-	protected boolean score(Collector c, int end, int firstDocID)
-			throws IOException {
+	protected boolean score(Collector c, int end, int firstDocID) throws IOException {
 		c.setScorer(this);
 		while (doc < end) { // for docs in window
 			c.collect(doc); // collect score
@@ -130,12 +132,14 @@ final class SimpleScorer extends Scorer {
 		return doc;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public float score() {
 		assert doc != -1;
-		//TODO: implements BM25 ranking algorithm
-		
-		return idf * this.termDocs.freq();
+		float norm = getSimilarity().decodeNorm(norms[doc]);
+		float length = 1 / (norm * norm);
+		float score = idf * (freq * (K1+1) / (freq + K1 * (1 - b + b * length / avgLength)));
+		return score;
 	}
 
 	/**
