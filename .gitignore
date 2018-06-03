@@ -1,2 +1,4 @@
 .settings/
 forIndex/
+*.tsinghua.edu.cn
+*.pyc
