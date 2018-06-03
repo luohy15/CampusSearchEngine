@@ -139,7 +139,7 @@ final class SimpleScorer extends Scorer {
 		float norm = getSimilarity().decodeNorm(norms[doc]);
 		float length = 1 / (norm * norm);
 		float score = idf * (freq * (K1+1) / (freq + K1 * (1 - b + b * length / avgLength)));
-		return score;
+		return -score; // wtf? but indeed should be reversed?!
 	}
 
 	/**
