@@ -59,21 +59,24 @@ public class ImageServer extends HttpServlet {
 			System.out.println(URLDecoder.decode(queryString, "utf-8"));
 			System.out.println(URLDecoder.decode(queryString, "gb2312"));
 			TopDocs results = search.searchQuery(queryString, 100);
+			HighLighter hl = new HighLighter(queryString);
 			String[] titles = null;
 			String[] urls = null;
+			String[] bodies = null;
 			if (results != null) {
 				ScoreDoc[] hits = showList(results.scoreDocs, page);
 				if (hits != null) {
 					titles = new String[hits.length];
 					urls = new String[hits.length];
+					bodies = new String[hits.length];
 					for (int i = 0; i < hits.length && i < PAGE_RESULT; i++) {
 						Document doc = search.getDoc(hits[i].doc);
 						System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score + " title= "
 								+ doc.get("title") + " url= " + doc.get("url"));
-						titles[i] = doc.get("title");
+						titles[i] = hl.highlight(doc.get("title"), true);
 						urls[i] = doc.get("url");
+						bodies[i] = hl.highlight(doc.get("body"), false);
 					}
-
 				} else {
 					System.out.println("page null");
 				}
@@ -84,6 +87,7 @@ public class ImageServer extends HttpServlet {
 			request.setAttribute("currentPage", page);
 			request.setAttribute("titles", titles);
 			request.setAttribute("urls", urls);
+			request.setAttribute("bodies", bodies);
 			request.getRequestDispatcher("/imageshow.jsp").forward(request, response);
 		}
 	}
