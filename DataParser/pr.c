@@ -30,6 +30,10 @@
 
 unsigned n_nodes = 0;
 
+#define MAX_FINAME 256
+const char* finame;
+const char* default_finame = "html.graph";
+
 typedef struct {
   unsigned t;
   unsigned next;
@@ -67,7 +71,8 @@ void scannodes(void)
 
 void readdata(void)
 {
-  FILE* fin = fopen("txt.graph", "r");
+  FILE* fin = fopen(finame, "r");
+	assert(fin != NULL);
   // discretise nodes
   set_fastio_fin(fin);
   fseek(fin, 0, SEEK_SET);
@@ -179,8 +184,17 @@ void better_output(void)
   }
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
+	if (argc > 2) {
+		printf("Usage: %s INPUT_GRAPH_FILE\n", argv[0]);
+		return 1;
+	}
+	if (argc == 2) {
+		finame = argv[1];
+	} else {
+		finame = default_finame;
+	}
   readdata();
   run_pagerank(TN);
   better_output();
