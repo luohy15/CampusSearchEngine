@@ -120,18 +120,13 @@ char stdoutbuf[STDOUTBUF_SZ]; // 16 MB of buffer
 
 void run_pagerank(unsigned n_iter)
 {
-  FILE* fout = fopen("prresult", "w");
   unsigned N = n_nodes; // shorthand
-  setvbuf(fout, stdoutbuf, _IOFBF, STDOUTBUF_SZ);
 
   for (unsigned u = 0; u < N; u++)
     p[u] = ((float) 1) / N;
 
   while (n_iter--) {
     printf("iter beg.\n");
-    for (unsigned u = 0; u < N; u++)
-      fprintf(fout, "%.5f\n", p[u]);
-    fprintf(fout, "\n***\n");
     float S = 0;
     for (unsigned u = 0; u < N; u++)
       p1[u] = alpha / N;
@@ -148,7 +143,6 @@ void run_pagerank(unsigned n_iter)
       p[u] = p1[u] + (1-alpha)*S/N;
   }
 
-  fclose(fout);
 }
 
 int cmp_prres_ent(const void* a, const void* b)
@@ -160,6 +154,8 @@ int cmp_prres_ent(const void* a, const void* b)
   return -1;
   // a little fp error is acceptable
 }
+
+#define MAX_FNAME 20
 
 void better_output(void)
 {
@@ -174,25 +170,13 @@ void better_output(void)
 
   qsort(prres, N, sizeof(prres_ent), cmp_prres_ent);
 
-  FILE* fout = fopen("lastresult", "w");
+	char fname[MAX_FNAME];
   for (unsigned i = 0; i < N; i++) {
-    fprintf(fout, "%d: %.5f %d %d\n", hash_getr(prres[i].u)->v, prres[i].v,
-        prres[i].id, prres[i].od);
+		sprintf(fname, "%d.txt", hash_getr(prres[i].u)->v);
+		FILE* fout = fopen(fname, "a");
+		fprintf(fout, "%.8f\n", prres[i].v);
+		fclose(fout);
   }
-  fclose(fout);
-
-  unsigned idz = 0;
-  for (unsigned u = 0; u < N; u++)
-    if (id[u] == 0)
-      idz++;
-  printf("#id=0: %d (%.2f%%)\n", idz, ((float) idz) / N * 100);
-
-  unsigned odz = 0;
-  for (unsigned u = 0; u < N; u++)
-    if (od[u] == 0)
-      odz++;
-  printf("#od=0: %d (%.2f%%)\n", odz, ((float) odz) / N * 100);
-
 }
 
 int main(void)
