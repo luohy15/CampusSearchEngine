@@ -11,6 +11,7 @@ public class HighLighter {
 	public class Pair<T1, T2> {
 		public T1 v1;
 		public T2 v2;
+
 		public Pair(T1 a, T2 b) {
 			v1 = a;
 			v2 = b;
@@ -40,7 +41,7 @@ public class HighLighter {
 	private static final int N_CONTEXT = 5;
 	private static final int N_NONFULL_TRIM = 100;
 	private static final String HL_SEP = "...";
-	
+
 	public String highlight(String text, boolean full) {
 		if (full) {
 			for (String t : terms) {
@@ -49,7 +50,7 @@ public class HighLighter {
 			return text;
 		} else {
 			// holy shxt after writing so much C, I forgot how to write OO code
-			// 	so below is written actually in C
+			// so below is written actually in C
 
 			// find individual display interval
 			ArrayList<Pair<Integer, Integer>> raw_intvls = new ArrayList<Pair<Integer, Integer>>();
@@ -59,8 +60,7 @@ public class HighLighter {
 					idx = text.indexOf(t, idx);
 					if (idx == -1)
 						break;
-					raw_intvls.add(new Pair<Integer, Integer>(
-							Math.max(0, idx - N_CONTEXT),
+					raw_intvls.add(new Pair<Integer, Integer>(Math.max(0, idx - N_CONTEXT),
 							Math.min(text.length(), idx + t.length() + N_CONTEXT)));
 					idx += t.length();
 				}
@@ -77,18 +77,23 @@ public class HighLighter {
 					Pair<Integer, Integer> p2 = intvls.get(j);
 					int mbj = p2.v1;
 					int mej = p2.v2;
-					if (ei >= mbj && ei < mej && bi < mbj) {
+					if (bi >= mbj && ei <= mej) {
+						flag = 1;
+						break;
+					}
+					if (bi <= mbj && ei >= mej) {
+						intvls.set(j, new Pair<Integer, Integer>(bi, ei));
+						flag = 2;
+						break;
+					}
+					if (ei >= mbj && ei <= mej && bi < mbj) {
 						intvls.set(j, new Pair<Integer, Integer>(bi, mej));
 						flag = 2;
 						break;
 					}
-					if (bi >= mbj && bi < mej && ei > mej) {
+					if (bi >= mbj && bi <= mej && ei > mej) {
 						intvls.set(j, new Pair<Integer, Integer>(mbj, ei));
 						flag = 2;
-						break;
-					}
-					if (bi >= mbj && ei <= mej) {
-						flag = 1;
 						break;
 					}
 				}

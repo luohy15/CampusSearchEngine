@@ -23,7 +23,7 @@ public class ImageIndexer {
 
 	private static float TITLE_BOOST = 500.0f;
 	private static float BODY_BOOST = 1.0f;
-	private static float PR_QUANTUM = 1e-8f;
+	private static float PR_QUANTUM = 1e-8f; // TODO: change smaller for large files
 	private static String TXT_PATH = "/home/fuck/hw3/ImageSearch/DataParser/build";
 
 	@SuppressWarnings("deprecation")
@@ -54,7 +54,8 @@ public class ImageIndexer {
 
 	private float pr2docBoost(float pr) {
 		// some nonlinearity here
-		return (float) (Math.log(pr / PR_QUANTUM) + 1.0f);
+		// return (float) (Math.log(pr / PR_QUANTUM) + 1.0f); // for large data
+		return pr; // for small data
 	}
 
 	private Document buildDocument(NamedNodeMap attrs) throws FileNotFoundException {
