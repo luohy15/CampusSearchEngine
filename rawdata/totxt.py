@@ -1,13 +1,8 @@
-import hashlib
-from hashlib import sha1
 import sys
 import os
 from bs4 import BeautifulSoup
 from visible import *
 from getlinks import *
-#  sha1 = hashlib.sha1()
-# BUF_SIZE is totally arbitrary, change for your app!
-#  BUF_SIZE = 65536  # lets read stuff in 64kb chunks!
 
 file2id = {}
 out = {}
@@ -79,54 +74,6 @@ def parse_files():
                         print(text_from_html(fr), file=fout)
                 except:
                     pass
-
-def gettitle(s):
-    soup = BeautifulSoup(open(s))
-    return soup.title
-
-def getcontent(s):
-    pass
-
-def work():
-    fout = open("run.tmp", "w")
-    with open("crawl.log", "r") as fin:
-        lines = fin.readlines()
-        for line in lines:
-            tokens = line.strip().split()
-            #  print(tokens, file=fout)
-            dst = tokens[3]
-            src = tokens[5]
-            protocal = dst.split(":")[0]
-            if protocal == "http":
-                dstpath = dst.replace("http:/", os.getcwd())
-                srcpath = src.replace("http:/", os.getcwd())
-                if os.path.isfile(dstpath) and os.path.isfile(srcpath):
-                    #  filesha1 = make_sha1(filepath)
-                    print(dstpath+" "+srcpath, file=fout)
-                    out[get_id(srcpath)].append(get_id(dstpath))
-                    #  with open(filepath, 'rb') as f:
-                        #  while True:
-                            #  data = f.read(BUF_SIZE)
-                            #  if not data:
-                                #  break
-                            #  sha1.update(data)
-                    #  print("filesha:{0}".format(sha1.hexdigest())+"sha1digest:{0}".format(tokens[9]), file=fout)
-        print(str(out), file=fout)
-        for line in lines:
-            tokens = line.strip().split()
-            dst = tokens[3]
-            protocal = dst.split(":")[0]
-            if protocal == "http":
-                dstpath = dst.replace("http:/", os.getcwd())
-                if os.path.isfile(dstpath):
-                    document_id = get_id(dstpath)
-                    with open(str(document_id)+".txt", "w", encoding="utf8") as txtout:
-                        print(str(document_id), file=txtout)
-                        print(dst, file=txtout)
-                        print(out[document_id], file=txtout)
-                        print(gettitle(dstpath), file=txtout)
-                        print(getcontent(dstpath), file=txtout)
-    fout.close()
 
 if __name__ == "__main__":
     build_fileid()
