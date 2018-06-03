@@ -7,77 +7,172 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 String imagePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/";
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>无标题文档</title>
-<style type="text/css">
-<!--
-#Layer1 {
-	position:absolute;
-	left:28px;
-	top:26px;
-	width:649px;
-	height:32px;
-	z-index:1;
-}
-#Layer2 {
-	position:absolute;
-	left:29px;
-	top:82px;
-	width:648px;
-	height:602px;
-	z-index:2;
-}
-#Layer3 {
-	position:absolute;
-	left:28px;
-	top:697px;
-	width:652px;
-	height:67px;
-	z-index:3;
-}
--->
-</style>
-</head>
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://getbootstrap.com/docs/4.0/examples/cover/# -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://getbootstrap.com/favicon.ico">
 
-<body>
+    <title>Kampas Searsh</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+<style>
+/*
+ * Globals
+ */
+
+/* Links */
+a,
+a:focus,
+a:hover {
+  color: #fff;
+}
+
+/* Custom default button */
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:focus {
+  color: #333;
+  text-shadow: none; /* Prevent inheritance from `body` */
+  background-color: #fff;
+  border: .05rem solid #fff;
+}
+
+
+/*
+ * Base structure
+ */
+
+html,
+body {
+  height: 100%;
+  background-color: #333;
+}
+
+body {
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.cover-container {
+  max-width: 42em;
+}
+
+
+/*
+ * Header
+ */
+.masthead {
+  margin-bottom: 2rem;
+}
+
+.masthead-brand {
+  margin-bottom: 0;
+}
+
+.nav-masthead .nav-link {
+  padding: .25rem 0;
+  font-weight: 700;
+  color: rgba(255, 255, 255, .5);
+  background-color: transparent;
+  border-bottom: .25rem solid transparent;
+}
+
+.nav-masthead .nav-link:hover,
+.nav-masthead .nav-link:focus {
+  border-bottom-color: rgba(255, 255, 255, .25);
+}
+
+.nav-masthead .nav-link + .nav-link {
+  margin-left: 1rem;
+}
+
+.nav-masthead .active {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+@media (min-width: 48em) {
+  .masthead-brand {
+    float: left;
+  }
+  .nav-masthead {
+    float: right;
+  }
+}
+
+
+/*
+ * Cover
+ */
+.cover {
+  padding: 0 1.5rem;
+}
+.cover .btn-lg {
+  padding: .75rem 1.25rem;
+  font-weight: 700;
+}
+
+
+/*
+ * Footer
+ */
+.mastfoot {
+  color: rgba(255, 255, 255, .5);
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: white;
+}
+</style>
+  </head>
+
+  <body class="text-center">
 <%
 	String currentQuery=(String) request.getAttribute("currentQuery");
 	int currentPage=(Integer) request.getAttribute("currentPage");
 %>
-<div id="Layer1">
-  <form id="form1" name="form1" method="get" action="ImageServer">
-    <label>
-      <input name="query" value="<%=currentQuery%>" type="text" size="70" />
-    </label>
-    <label>
-    <input type="submit" name="Submit" value="查询" />
-    </label>
-  </form>
-</div>
-<div id="Layer2" style="top: 82px; height: 585px;">
-  <div id="imagediv">结果显示如下：
-  <br>
-  <Table style="left: 0px; width: 594px;">
-  <% 
+
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h4 class="masthead-brand"><a href="/ImageSearch/imagesearch.jsp">Search Tsinghua</a></h4>
+					<span style="padding-left: 80px"></span>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link" href="https://luohy15.github.io/">Luohy</a>
+            <a class="nav-link" href="https://hoblovski.github.io/">Daizy</a>
+            <a class="nav-link" href="http://www.thuir.cn/group/~YQLiu/">Liuyq</a>
+          </nav>
+        </div>
+      </header>
+<div style="margin-top: 50px"> </div>
+ <% 
   	String[] imgTags=(String[]) request.getAttribute("titles");
   	String[] urls = (String[]) request.getAttribute("urls");
   	String[] bodies = (String[]) request.getAttribute("bodies");
   	if(imgTags!=null && imgTags.length>0){
   		for(int i=0;i<imgTags.length;i++){%>
-  		<p>
-  		<tr><h3><%=(currentPage-1)*10+i+1%>. <%=imgTags[i] %> <a href="<%=urls[i]%>">链接</a></h3></tr>
-  		<%=bodies[i] %>
-  		</p>
+  		<a href="<%=urls[i]%>">
+  		<h3 style="text-align: left;"><%=imgTags[i] %></h3></a>
+  		<p style="text-align: left; text-ident: 2em;"> <%=bodies[i] %> </p>
+		<hr/>
   		<%}; %>
   	<%}else{ %>
-  		<p><tr><h3>no such result</h3></tr></p>
+  		<h3>no such result</h3>
   	<%}; %>
-  </Table>
-  </div>
-  <div>
+
+
   	<p>
 		<%if(currentPage>1){ %>
 			<a href="ImageServer?query=<%=currentQuery%>&page=<%=currentPage-1%>">上一页</a>
@@ -91,11 +186,25 @@ String imagePath = request.getScheme()+"://"+request.getServerName()+":"+request
 		<%}; %>
 		<a href="ImageServer?query=<%=currentQuery%>&page=<%=currentPage+1%>">下一页</a>
 	</p>
-  </div>
-</div>
-<div id="Layer3" style="top: 839px; left: 27px;">
-	
-</div>
-<div>
-</div>
-</body>
+
+
+
+
+      <footer class="mastfoot mt-auto">
+        <div class="inner">
+          <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+        </div>
+      </footer>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./Cover Template for Bootstrap_files/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  
+
+</body></html>
