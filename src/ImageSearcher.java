@@ -28,6 +28,9 @@ public class ImageSearcher {
 	private Analyzer analyzer;
 	private float avgLength = 1.0f;
 
+	private static final boolean USE_BM25_SCORER = true;
+	private static final boolean SEGMENT_QUERY = true;
+
 	public ImageSearcher(String indexdir) {
 		analyzer = new IKAnalyzer();
 		try {
@@ -38,9 +41,6 @@ public class ImageSearcher {
 			e.printStackTrace();
 		}
 	}
-
-	private static final boolean USE_BM25_SCORER = false;
-	private static final boolean SEGMENT_QUERY = true;
 
 	private Query genMultiFieldBM25Query(String field, String text) throws IOException {
 		Analyzer analyzer = new IKAnalyzer();
@@ -73,8 +73,6 @@ public class ImageSearcher {
 				query = new TermQuery(term);
 			}
 			query.setBoost(1.0f);
-			// Weight w=searcher.createNormalizedWeight(query);
-			// System.out.println(w.getClass());
 			TopDocs results = searcher.search(query, maxnum);
 			System.out.println(results + " " + results.totalHits);
 			return results;
@@ -113,11 +111,11 @@ public class ImageSearcher {
 		search.loadGlobals("forIndex/global.txt");
 		System.out.println("avg length = " + search.getAvg());
 
-		TopDocs results = search.searchQuery("憨豆先生", "abstract", 100);
+		TopDocs results = search.searchQuery("清华", "title", 100);
 		ScoreDoc[] hits = results.scoreDocs;
 		for (int i = 0; i < hits.length; i++) { // output raw format
 			Document doc = search.getDoc(hits[i].doc);
-			System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score + " picPath= " + doc.get("abstract"));
+			System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score + " title= " + doc.get("title"));
 		}
 	}
 }

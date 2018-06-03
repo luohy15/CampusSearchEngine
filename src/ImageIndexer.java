@@ -20,6 +20,11 @@ public class ImageIndexer {
 	private IndexWriter indexWriter;
 	private float averageLength = 1.0f;
 
+	private static float TITLE_BOOST = 10.0f;
+	private static float BODY_BOOST = 1.0f;
+	private static float PR_QUANTUM = 1e-8f;
+
+	@SuppressWarnings("deprecation")
 	public ImageIndexer(String indexDir) {
 		analyzer = new IKAnalyzer();
 		try {
@@ -42,6 +47,11 @@ public class ImageIndexer {
 		}
 	}
 
+	private float pr2docBoost(float pr) {
+		// some nonlinearity here
+		return (float) (Math.log(pr / PR_QUANTUM) + 1.0f);
+	}
+
 	public void indexSpecialFile(String filename) {
 		try {
 			// extract all <pic ...> ... </pic>
@@ -49,26 +59,25 @@ public class ImageIndexer {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			org.w3c.dom.Document doc = db.parse(new File(filename));
 			NodeList nodeList = doc.getElementsByTagName("pic");
+			System.out.println("INFO: found " + nodeList.getLength() + " entries");
 			// for each <pic/>, build a Document for it
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				// extract information
-				Node node = nodeList.item(i);
-				NamedNodeMap attrs = node.getAttributes();
-				String absString = attrs.getNamedItem("bigClass").getNodeValue() + " "
-						+ attrs.getNamedItem("smallClass").getNodeValue() + " "
-						+ attrs.getNamedItem("query").getNodeValue();
+				NamedNodeMap attrs = nodeList.item(i).getAttributes();
 				// build document
 				Document document = new Document();
-				Field abstractField = new Field("abstract", absString, Field.Store.YES, Field.Index.ANALYZED);
-				document.add(abstractField);
+				String titleString = attrs.getNamedItem("title").getNodeValue();
+				Field titleField = new Field("title", titleString, Field.Store.YES,
+						Field.Index.ANALYZED);
+				titleField.setBoost(TITLE_BOOST);
+				document.add(titleField);
+				float pr = Float.parseFloat(attrs.getNamedItem("pr").getNodeValue());
+				document.setBoost(pr2docBoost(pr));
+				System.out.println("title=" + titleString + " prboost=" +
+						pr2docBoost(pr));
 				indexWriter.addDocument(document);
 				// other stupid stuff
-				averageLength += absString.length();				
-				if (i % 10000 == 0) {
-					System.out.println("process " + i);
-				}
-				// TODO: add other fields such as html title or html content
-
+				averageLength += titleString.length(); // TODO
 			}
 			averageLength /= indexWriter.numDocs();
 			System.out.println("average length = " + averageLength);
@@ -81,7 +90,7 @@ public class ImageIndexer {
 
 	public static void main(String[] args) {
 		ImageIndexer indexer = new ImageIndexer("forIndex/index");
-		indexer.indexSpecialFile("input/sogou-utf8.xml");
+		indexer.indexSpecialFile("input/html.xml");
 		indexer.saveGlobals("forIndex/global.txt");
 	}
 }
