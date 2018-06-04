@@ -44,10 +44,6 @@ def parse_files():
                         print(url, file=fout)
                         out = []
                         links = links_from_html(fr, url)
-                        if (fid == 264):
-                            print("fid=%d"%fid)
-                            print(fr)
-                            print(text_from_html(fr))
                         for link in links:
                             fp = "./" + link[7:]
                             if fp in file2id:
@@ -55,9 +51,9 @@ def parse_files():
                         out = list(set(out))
                         print(" ".join(out), file=fout)
                         if soup.title:
-                            print(soup.title.string, file=fout)
+                            print(soup.title.string.replace("\n", ""), file=fout)
                         else:
-                            print(file=fout)
+                            print("", file=fout)
                         print(text_from_html(fr, fid), file=fout)
                 except UnicodeDecodeError:
                     with open(fn, "r", encoding="cp936") as fin:
@@ -68,10 +64,6 @@ def parse_files():
                         print(url, file=fout)
                         out = []
                         links = links_from_html(fr, url)
-                        if (fid == 264):
-                            print("fid=%d"%fid)
-                            print(fr)
-                            print(text_from_html(fr))
                         for link in links:
                             fp = "./" + link[7:]
                             if fp in file2id:
@@ -79,9 +71,9 @@ def parse_files():
                         out = list(set(out))
                         print(" ".join(out), file=fout)
                         if soup.title:
-                            print(soup.title.string, file=fout)
+                            print(soup.title.string.replace("\n", ""), file=fout)
                         else:
-                            print(file=fout)
+                            print("", file=fout)
                         print(text_from_html(fr, fid), file=fout)
                 except:
                     pass

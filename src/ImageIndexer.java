@@ -24,7 +24,8 @@ public class ImageIndexer {
 	private static float TITLE_BOOST = 500.0f;
 	private static float BODY_BOOST = 1.0f;
 	private static float PR_QUANTUM = 1e-8f; // TODO: change smaller for large files
-	private static String TXT_PATH = "/home/fuck/hw3/ImageSearch/DataParser/build";
+	// private static String TXT_PATH = "/home/fuck/hw3/ImageSearch/DataParser/build";
+	private static String TXT_PATH = "/Users/rv/src/project/ImageSearch/DataParser/build";
 
 	@SuppressWarnings("deprecation")
 	public ImageIndexer(String indexDir) {

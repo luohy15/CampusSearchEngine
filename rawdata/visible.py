@@ -17,10 +17,10 @@ def text_from_html(body, fid):
     visible_texts = filter(tag_visible, texts)
     res = u" ".join(t.strip() for t in visible_texts)
     res = res.replace("\n", "")
-    if (fid == 264):
-        print("soup:", soup)
-        #  print("text:", list(texts))
-        print("visible_texts:", res)
+#    if (fid == 264):
+#        print("soup:", soup)
+#        #  print("text:", list(texts))
+#        print("visible_texts:", res)
 
     return res
 

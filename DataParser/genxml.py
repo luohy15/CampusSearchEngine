@@ -1,3 +1,4 @@
+MAX_TXT = 500
 fout = open("html.xml", "w", encoding="utf8")
 print("<?xml version=\"1.0\" ?>\n<pics>\n<category name=\"sogou\">", file=fout)
 i = 1
@@ -12,6 +13,8 @@ while True:
                 lines[3].strip(), lines[0].strip(),
                 lines[5].strip(), lines[1].strip()), file=fout)
         i += 1
+        if (i > MAX_TXT):
+            break
     except:
         print("Totally %d files found" % (i-1))
         break
