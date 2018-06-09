@@ -9,6 +9,7 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 System.out.println(path);
 System.out.println(basePath);
+String bgimgno = String.valueOf(new Random().nextInt(5));
 %>
 
 <!DOCTYPE html>
@@ -52,12 +53,15 @@ a:hover {
 /*
  * Base structure
  */
-
-html,
-body {
+html, body {
   height: 100%;
-  background-color: #ddd;
+  background: url(2<%= bgimgno%>.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
+
 
 body {
   display: -ms-flexbox;
@@ -164,7 +168,7 @@ body {
 				action="/ImageSearch/servlet/FileServer">
 				<input type="text" placeholder="What would you like to know about?"
 					name="query" size="40" id="search_kw"
-					style="background-color:rgba(0, 0, 0, 0); border: 1px solid; font-size: large; font-family: sans-serif;" />
+					style="background-color:rgba(255, 255, 255, 0.3); border: 1px solid; font-size: large; font-family: sans-serif;" />
 			</form>
 		</main>
 

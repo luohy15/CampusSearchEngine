@@ -9,8 +9,9 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 System.out.println(path);
 System.out.println(basePath);
+String bgimgno = String.valueOf(new Random().nextInt(5));
 %>
-
+ 
 <!DOCTYPE html>
 <!-- saved from url=(0050)https://getbootstrap.com/docs/4.0/examples/cover/# -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -53,10 +54,13 @@ a:hover {
  * Base structure
  */
 
-html,
-body {
+html, body {
   height: 100%;
-  background-color: #333;
+  background: url(1<%= bgimgno%>.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 body {

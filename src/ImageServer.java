@@ -16,13 +16,14 @@ import java.math.*;
 import java.net.*;
 import java.io.*;
 
+
 public class ImageServer extends HttpServlet {
 	public static final int PAGE_RESULT = 10;
 	public static final String indexDir = "/home/fuck/hw3/ImageSearch/forIndex/";
 //	public static final String indexDir = "/Users/rv/Downloads/apache-tomcat-8.5.31/bin";
 	public static final String picDir = "";
 	private ImageSearcher search = null;
-
+	
 	public ImageServer() {
 		super();
 		search = new ImageSearcher(new String(indexDir + "/index"));
