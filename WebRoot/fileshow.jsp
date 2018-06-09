@@ -31,7 +31,7 @@ String imagePath = request.getScheme()+"://"+request.getServerName()+":"+request
 a,
 a:focus,
 a:hover {
-  color: #fff;
+  color: #000;
 }
 
 /* Custom default button */
@@ -40,8 +40,8 @@ a:hover {
 .btn-secondary:focus {
   color: #333;
   text-shadow: none; /* Prevent inheritance from `body` */
-  background-color: #fff;
-  border: .05rem solid #fff;
+  background-color: #000;
+  border: .05rem solid #000;
 }
 
 
@@ -62,7 +62,7 @@ body {
   -ms-flex-pack: center;
   -webkit-box-pack: center;
   justify-content: center;
-  color: #fff;
+  color: #000;
 }
 
 .cover-container {
@@ -84,14 +84,14 @@ body {
 .nav-masthead .nav-link {
   padding: .25rem 0;
   font-weight: 700;
-  color: rgba(255, 255, 255, .5);
+  color: rgba(0, 0, 0, .5);
   background-color: transparent;
   border-bottom: .25rem solid transparent;
 }
 
 .nav-masthead .nav-link:hover,
 .nav-masthead .nav-link:focus {
-  border-bottom-color: rgba(255, 255, 255, .25);
+  border-bottom-color: rgba(0, 0, 0, .25);
 }
 
 .nav-masthead .nav-link + .nav-link {
@@ -99,8 +99,8 @@ body {
 }
 
 .nav-masthead .active {
-  color: #fff;
-  border-bottom-color: #fff;
+  color: #000;
+  border-bottom-color: #000;
 }
 
 @media (min-width: 48em) {
@@ -129,11 +129,11 @@ body {
  * Footer
  */
 .mastfoot {
-  color: rgba(255, 255, 255, .5);
+  color: rgba(0, 0, 0, .5);
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: white;
+  color: black;
 }
 </style>
   </head>
@@ -151,9 +151,9 @@ body {
 					<span style="padding-left: 80px"></span>
 				<nav class="nav nav-masthead justify-content-center">
 					<form id="form1" name="form1" method="get"
-						action="servlet/ImageServer">
+						action="/ImageSearch/servlet/FileServer">
 						<input type="text"
-							placeholder="What would you like to know about?" name="query"
+							value="<%=currentQuery%>"  name="query"
 							size="40" id="search_kw"
 							style="background-color:rgba(0, 0, 0, 0); border: 1px solid; font-size: large; font-family: sans-serif;" />
 					</form>
@@ -173,7 +173,7 @@ body {
 		<hr/>
   		<%}; %>
   	<%}else{ %>
-  		<h3>No result? Consider another keyword, what about "清华"</h3>
+  		<h3>No result? Consider another keyword, what about "计算机"</h3>
   	<%}; %>
 
 
@@ -182,16 +182,16 @@ body {
   	if (totDocs > 10) { // bad hardcode %>
   	<p>
 		<%if(currentPage>1){ %>
-			<a href="ImageServer?query=<%=currentQuery%>&page=<%=currentPage-1%>">上一页</a>
+			<a href="FileServer?query=<%=currentQuery%>&page=<%=currentPage-1%>">上一页</a>
 		<%}; %>
 		<%for (int i=Math.max(1,currentPage-5);i<currentPage;i++){%>
-			<a href="ImageServer?query=<%=currentQuery%>&page=<%=i%>"><%=i%></a>
+			<a href="FileServer?query=<%=currentQuery%>&page=<%=i%>"><%=i%></a>
 		<%}; %>
 		<strong><%=currentPage%></strong>
 		<%for (int i=currentPage+1;i<=currentPage+5;i++){ %>
-			<a href="ImageServer?query=<%=currentQuery%>&page=<%=i%>"><%=i%></a>
+			<a href="FileServer?query=<%=currentQuery%>&page=<%=i%>"><%=i%></a>
 		<%}; %>
-		<a href="ImageServer?query=<%=currentQuery%>&page=<%=currentPage+1%>">下一页</a>
+		<a href="FileServer?query=<%=currentQuery%>&page=<%=currentPage+1%>">下一页</a>
 	</p>
 <% } %>
 

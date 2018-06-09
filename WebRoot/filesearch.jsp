@@ -161,7 +161,7 @@ body {
       <main role="main" class="inner cover">
           <hr style="opacity: 0">
 			<form id="form1" name="form1" method="get"
-				action="servlet/ImageServer">
+				action="/ImageSearch/servlet/FileServer">
 				<input type="text" placeholder="What would you like to know about?"
 					name="query" size="40" id="search_kw"
 					style="background-color:rgba(0, 0, 0, 0); border: 1px solid; font-size: large; font-family: sans-serif;" />

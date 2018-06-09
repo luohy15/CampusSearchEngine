@@ -172,7 +172,7 @@ body {
 		<hr/>
   		<%}; %>
   	<%}else{ %>
-  		<h3>No result? Consider another keyword, what about "清华"</h3>
+  		<h3>No result? Consider another keyword, what about "计算机"</h3>
   	<%}; %>
 
 
