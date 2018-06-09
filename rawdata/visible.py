@@ -10,8 +10,7 @@ def tag_visible(element):
     return True
 
 
-def text_from_html(body, fid):
-    soup = BeautifulSoup(body, 'html.parser')
+def text_from_html(soup, fid):
     #  if soup.title:
         #  if soup.title.string:
             #  print(soup.title.string.replace("\n", ""))

@@ -1,6 +1,5 @@
-MAX_TXT = 1500
-#  txt_path = "/Users/rv/src/project/search_engine/hwbig/rawdata"
-txt_path = "./build"
+MAX_TXT = 7000
+txt_path = "."
 fout = open("html.graph", "w", encoding="utf8")
 i = 1
 while True:

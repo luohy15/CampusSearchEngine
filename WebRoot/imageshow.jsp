@@ -174,7 +174,7 @@ body {
 
 
  <% 
-  	int totDocs=(int) request.getAttribute("totDocs");
+  	int totDocs=(Integer) request.getAttribute("totDocs");
   	if (totDocs > 10) { // bad hardcode %>
   	<p>
 		<%if(currentPage>1){ %>

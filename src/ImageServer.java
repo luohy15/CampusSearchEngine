@@ -18,8 +18,8 @@ import java.io.*;
 
 public class ImageServer extends HttpServlet {
 	public static final int PAGE_RESULT = 10;
-	// public static final String indexDir = "/home/fuck/hw3/tomcat/bin";
-	public static final String indexDir = "/Users/rv/Downloads/apache-tomcat-8.5.31/bin";
+	public static final String indexDir = "/home/fuck/hw3/tomcat/bin";
+//	public static final String indexDir = "/Users/rv/Downloads/apache-tomcat-8.5.31/bin";
 	public static final String picDir = "";
 	private ImageSearcher search = null;
 
@@ -27,6 +27,7 @@ public class ImageServer extends HttpServlet {
 		super();
 		search = new ImageSearcher(new String(indexDir + "/index"));
 		search.loadGlobals(new String(indexDir + "/global.txt"));
+		assert(search != null);
 	}
 
 	public ScoreDoc[] showList(ScoreDoc[] results, int page) {
@@ -74,6 +75,7 @@ public class ImageServer extends HttpServlet {
 						Document doc = search.getDoc(hits[i].doc);
 						System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score + " title= "
 								+ doc.get("title") + " url= " + doc.get("url"));
+						System.out.println("pr=" + doc.getBoost());
 						titles[i] = hl.highlight(doc.get("title"), true);
 						urls[i] = doc.get("url");
 						bodies[i] = hl.highlight(doc.get("body"), false);
@@ -89,7 +91,7 @@ public class ImageServer extends HttpServlet {
 			request.setAttribute("titles", titles);
 			request.setAttribute("urls", urls);
 			request.setAttribute("bodies", bodies);
-			request.setAttribute("totDocs", results.scoreDocs.length);
+			request.setAttribute("totDocs", results == null ? 0 : results.scoreDocs.length);
 			request.getRequestDispatcher("/imageshow.jsp").forward(request, response);
 		}
 	}
