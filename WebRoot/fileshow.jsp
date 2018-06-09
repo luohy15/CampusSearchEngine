@@ -16,7 +16,7 @@ String imagePath = request.getScheme()+"://"+request.getServerName()+":"+request
     <meta name="author" content="">
     <link rel="icon" href="https://getbootstrap.com/favicon.ico">
 
-    <title>Web</title>
+    <title>File</title>
 
     <!-- Bootstrap core CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
@@ -52,7 +52,7 @@ a:hover {
 html,
 body {
   height: 100%;
-  background-color: #333;
+  background-color: #ddd;
 }
 
 body {
@@ -147,14 +147,15 @@ body {
 <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
       <header class="masthead mb-auto">
         <div class="inner">
-          <h4 class="masthead-brand"><a href="/ImageSearch/imagesearch.jsp">Web</a></h4>
+          <h4 class="masthead-brand"><a href="/ImageSearch/filesearch.jsp">File</a></h4>
 					<span style="padding-left: 80px"></span>
 				<nav class="nav nav-masthead justify-content-center">
 					<form id="form1" name="form1" method="get"
-						action="/ImageSearch/servlet/ImageServer">
-						<input type="text" value="<%=currentQuery%>" name="query"
+						action="servlet/ImageServer">
+						<input type="text"
+							placeholder="What would you like to know about?" name="query"
 							size="40" id="search_kw"
-							style="color: white; background-color:rgba(0, 0, 0, 0); border: 1px solid; font-size: large; font-family: sans-serif;" />
+							style="background-color:rgba(0, 0, 0, 0); border: 1px solid; font-size: large; font-family: sans-serif;" />
 					</form>
 				</nav>
 			</div>

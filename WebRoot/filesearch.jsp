@@ -1,10 +1,14 @@
+
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%
 request.setCharacterEncoding("utf-8");
+System.out.println(request.getCharacterEncoding());
 response.setCharacterEncoding("utf-8");
+System.out.println(response.getCharacterEncoding());
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-String imagePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/";
+System.out.println(path);
+System.out.println(basePath);
 %>
 
 <!DOCTYPE html>
@@ -16,7 +20,7 @@ String imagePath = request.getScheme()+"://"+request.getServerName()+":"+request
     <meta name="author" content="">
     <link rel="icon" href="https://getbootstrap.com/favicon.ico">
 
-    <title>Web</title>
+    <title>File</title>
 
     <!-- Bootstrap core CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
@@ -31,7 +35,7 @@ String imagePath = request.getScheme()+"://"+request.getServerName()+":"+request
 a,
 a:focus,
 a:hover {
-  color: #fff;
+  color: #000;
 }
 
 /* Custom default button */
@@ -40,8 +44,8 @@ a:hover {
 .btn-secondary:focus {
   color: #333;
   text-shadow: none; /* Prevent inheritance from `body` */
-  background-color: #fff;
-  border: .05rem solid #fff;
+  background-color: #000;
+  border: .05rem solid #000;
 }
 
 
@@ -52,7 +56,7 @@ a:hover {
 html,
 body {
   height: 100%;
-  background-color: #333;
+  background-color: #ddd;
 }
 
 body {
@@ -62,7 +66,7 @@ body {
   -ms-flex-pack: center;
   -webkit-box-pack: center;
   justify-content: center;
-  color: #fff;
+  color: #000;
 }
 
 .cover-container {
@@ -84,14 +88,14 @@ body {
 .nav-masthead .nav-link {
   padding: .25rem 0;
   font-weight: 700;
-  color: rgba(255, 255, 255, .5);
+  color: rgba(0, 0, 0, .5);
   background-color: transparent;
   border-bottom: .25rem solid transparent;
 }
 
 .nav-masthead .nav-link:hover,
 .nav-masthead .nav-link:focus {
-  border-bottom-color: rgba(255, 255, 255, .25);
+  border-bottom-color: rgba(0, 0, 0, .25);
 }
 
 .nav-masthead .nav-link + .nav-link {
@@ -99,8 +103,8 @@ body {
 }
 
 .nav-masthead .active {
-  color: #fff;
-  border-bottom-color: #fff;
+  color: #000;
+  border-bottom-color: #000;
 }
 
 @media (min-width: 48em) {
@@ -129,72 +133,40 @@ body {
  * Footer
  */
 .mastfoot {
-  color: rgba(255, 255, 255, .5);
+  color: rgba(0, 0, 0, .5);
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: white;
+  color: black;
 }
 </style>
   </head>
 
   <body class="text-center">
-<%
-	String currentQuery=(String) request.getAttribute("currentQuery");
-	int currentPage=(Integer) request.getAttribute("currentPage");
-%>
 
 <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
       <header class="masthead mb-auto">
         <div class="inner">
-          <h4 class="masthead-brand"><a href="/ImageSearch/imagesearch.jsp">Web</a></h4>
+          <h4 class="masthead-brand"><a href="/ImageSearch/filesearch.jsp">File</a></h4>
 					<span style="padding-left: 80px"></span>
-				<nav class="nav nav-masthead justify-content-center">
-					<form id="form1" name="form1" method="get"
-						action="/ImageSearch/servlet/ImageServer">
-						<input type="text" value="<%=currentQuery%>" name="query"
-							size="40" id="search_kw"
-							style="color: white; background-color:rgba(0, 0, 0, 0); border: 1px solid; font-size: large; font-family: sans-serif;" />
-					</form>
-				</nav>
-			</div>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link" href="imagesearch.jsp">Web</a>
+            <a class="nav-link" href="https://luohy15.github.io/">Luohy</a>
+            <a class="nav-link" href="https://hoblovski.github.io/">Daizy</a>
+            <a class="nav-link" href="http://www.thuir.cn/group/~YQLiu/">Liuyq</a>
+          </nav>
+        </div>
       </header>
-<div style="margin-top: 50px"> </div>
- <% 
-  	String[] imgTags=(String[]) request.getAttribute("titles");
-  	String[] urls = (String[]) request.getAttribute("urls");
-  	String[] bodies = (String[]) request.getAttribute("bodies");
-  	if(imgTags!=null && imgTags.length>0){
-  		for(int i=0;i<imgTags.length;i++){%>
-  		<a href="<%=urls[i]%>">
-  		<h3 style="text-align: left;"><%=imgTags[i] %></h3></a>
-  		<p style="text-align: left; text-ident: 2em;"> <%=bodies[i] %> </p>
-		<hr/>
-  		<%}; %>
-  	<%}else{ %>
-  		<h3>No result? Consider another keyword, what about "清华"</h3>
-  	<%}; %>
 
-
- <% 
-  	int totDocs=(Integer) request.getAttribute("totDocs");
-  	if (totDocs > 10) { // bad hardcode %>
-  	<p>
-		<%if(currentPage>1){ %>
-			<a href="ImageServer?query=<%=currentQuery%>&page=<%=currentPage-1%>">上一页</a>
-		<%}; %>
-		<%for (int i=Math.max(1,currentPage-5);i<currentPage;i++){%>
-			<a href="ImageServer?query=<%=currentQuery%>&page=<%=i%>"><%=i%></a>
-		<%}; %>
-		<strong><%=currentPage%></strong>
-		<%for (int i=currentPage+1;i<=currentPage+5;i++){ %>
-			<a href="ImageServer?query=<%=currentQuery%>&page=<%=i%>"><%=i%></a>
-		<%}; %>
-		<a href="ImageServer?query=<%=currentQuery%>&page=<%=currentPage+1%>">下一页</a>
-	</p>
-<% } %>
-
-
+      <main role="main" class="inner cover">
+          <hr style="opacity: 0">
+			<form id="form1" name="form1" method="get"
+				action="servlet/ImageServer">
+				<input type="text" placeholder="What would you like to know about?"
+					name="query" size="40" id="search_kw"
+					style="background-color:rgba(0, 0, 0, 0); border: 1px solid; font-size: large; font-family: sans-serif;" />
+			</form>
+		</main>
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
