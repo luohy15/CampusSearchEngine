@@ -21,15 +21,15 @@ public class ImageIndexer {
 	private float avgTitleLen = 1.0f; // omg why initially 1?
 	private float avgBodyLen = 1.0f; // follow stupid hack
 
-	private static float TITLE_BOOST = 500.0f;
+	private static float TITLE_BOOST = 1e4f;
 	private static float BODY_BOOST = 1.0f;
-	private static float PR_QUANTUM = 1e-8f; // TODO: change smaller for large files
-	// private static String TXT_PATH = "/home/fuck/hw3/ImageSearch/DataParser/build";
-	private static String TXT_PATH = "/Users/rv/src/project/ImageSearch/DataParser/build";
+	private static float PR_QUANTUM = 1e-5f;
+	private static String TXT_PATH = "/home/fuck/hw3/ImageSearch/DataParser/build";
+//	private static String TXT_PATH = "/Users/rv/src/project/ImageSearch/DataParser/build";
 
 	@SuppressWarnings("deprecation")
 	public ImageIndexer(String indexDir) {
-		analyzer = new IKAnalyzer();
+		analyzer = new IKAnalyzer(true);
 		try {
 			IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_35, analyzer);
 			Directory dir = FSDirectory.open(new File(indexDir));
@@ -54,9 +54,11 @@ public class ImageIndexer {
 	}
 
 	private float pr2docBoost(float pr) {
-		// some nonlinearity here
-		return (float) (Math.log(pr / PR_QUANTUM) + 1.0f); // for large data
-//		return pr; // for small data
+//		// some nonlinearity here
+//		float rv = (float) (Math.log(pr / PR_QUANTUM)); // for large data
+//		assert(rv > 0);
+//		return rv;
+		return pr; // for small data
 	}
 
 	private Document buildDocument(NamedNodeMap attrs) throws FileNotFoundException {
@@ -110,8 +112,8 @@ public class ImageIndexer {
 				NamedNodeMap attrs = nodeList.item(i).getAttributes();
 				Document document = buildDocument(attrs);
 				indexWriter.addDocument(document);
-				System.out.println("title=" + document.get("title") + " prboost=" +
-						document.getBoost());
+				System.out.println(" title= " + document.get("title") + " url= " + document.get("url") + " prboost="
+						+ document.getBoost());
 				// other stupid stuff
 				avgTitleLen += document.get("title").length();  // stupid hack 
 				avgBodyLen += document.get("body").length();

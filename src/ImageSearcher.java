@@ -44,20 +44,20 @@ public class ImageSearcher {
 	}
 
 	private Query genMultiFieldBM25Query(String text) throws IOException {
-		Analyzer analyzer = new IKAnalyzer();
+		Analyzer analyzer = new IKAnalyzer(true);
 		StringReader reader = new StringReader(text);
 		TokenStream ts = analyzer.tokenStream("", reader);
 		CharTermAttribute term = ts.getAttribute(CharTermAttribute.class);
 		BooleanQuery rv = new BooleanQuery();
 		while (ts.incrementToken()) {
 			String qs = term.toString();
-			System.out.println("QS.MUST: " + qs);
-			SimpleQuery sq = new SimpleQuery(new Term("body", qs), avgTitleLen);
+			System.out.println("QS: " + qs);
+			SimpleQuery sq = new SimpleQuery(new Term("body", qs), avgBodyLen);
 			sq.setImageSearcher(this);
 			rv.add(sq, BooleanClause.Occur.SHOULD);
 			sq = new SimpleQuery(new Term("title", qs), avgTitleLen);
 			sq.setImageSearcher(this);
-			rv.add(sq, BooleanClause.Occur.SHOULD);
+			rv.add(sq, BooleanClause.Occur.MUST);
 		}
 		analyzer.close();
 		reader.close();
@@ -115,7 +115,7 @@ public class ImageSearcher {
 		ImageSearcher search = new ImageSearcher("forIndex/index");
 		search.loadGlobals("forIndex/global.txt");
 
-		TopDocs results = search.searchQuery("清华", 100);
+		TopDocs results = search.searchQuery("计算机", 400);
 		ScoreDoc[] hits = results.scoreDocs;
 		for (int i = 0; i < hits.length; i++) { // output raw format
 			Document doc = search.getDoc(hits[i].doc);
