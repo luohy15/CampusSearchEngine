@@ -1,6 +1,7 @@
-MAX_TXT = 1500
-txt_path = "./build"
-fout = open("../input/html.xml", "w", encoding="utf8")
+MAX_TXT = 7000
+txt_path = "."
+fout = open("../../input/html.xml", "w", encoding="utf8")
+escape = lambda s : s.replace("\"", "'").replace("&", "&amp;")
 print("<?xml version=\"1.0\" ?>\n<pics>\n<category name=\"sogou\">", file=fout)
 i = 1
 while True:
@@ -11,7 +12,7 @@ while True:
                 print("Files should contain 6 lines")
                 break
             print("<pic title=\"%s\" id=\"%s\" pr=\"%s\" url=\"%s\"/>" % (
-                lines[3].strip(), lines[0].strip(),
+                escape(lines[3].strip()), lines[0].strip(),
                 lines[5].strip(), lines[1].strip()), file=fout)
         i += 1
         if (i > MAX_TXT):
