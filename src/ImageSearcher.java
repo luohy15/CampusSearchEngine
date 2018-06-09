@@ -57,7 +57,7 @@ public class ImageSearcher {
 			rv.add(sq, BooleanClause.Occur.SHOULD);
 			sq = new SimpleQuery(new Term("title", qs), avgTitleLen);
 			sq.setImageSearcher(this);
-			rv.add(sq, BooleanClause.Occur.MUST);
+			rv.add(sq, BooleanClause.Occur.SHOULD);
 		}
 		analyzer.close();
 		reader.close();
