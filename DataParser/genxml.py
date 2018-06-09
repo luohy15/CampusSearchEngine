@@ -1,10 +1,11 @@
-MAX_TXT = 500
-fout = open("html.xml", "w", encoding="utf8")
+MAX_TXT = 1500
+txt_path = "./build"
+fout = open("../input/html.xml", "w", encoding="utf8")
 print("<?xml version=\"1.0\" ?>\n<pics>\n<category name=\"sogou\">", file=fout)
 i = 1
 while True:
     try:
-        with open("%s.txt"%i, "r", encoding="utf8") as fin:
+        with open(txt_path + '/' + "%s.txt"%i, "r", encoding="utf8") as fin:
             lines = fin.readlines()
             if (len(lines) != 6):
                 print("Files should contain 6 lines")

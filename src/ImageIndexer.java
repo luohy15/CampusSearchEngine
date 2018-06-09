@@ -55,8 +55,8 @@ public class ImageIndexer {
 
 	private float pr2docBoost(float pr) {
 		// some nonlinearity here
-		// return (float) (Math.log(pr / PR_QUANTUM) + 1.0f); // for large data
-		return pr; // for small data
+		return (float) (Math.log(pr / PR_QUANTUM) + 1.0f); // for large data
+//		return pr; // for small data
 	}
 
 	private Document buildDocument(NamedNodeMap attrs) throws FileNotFoundException {

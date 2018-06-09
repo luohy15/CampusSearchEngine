@@ -3,3 +3,5 @@ forIndex/
 *.tsinghua.edu.cn
 *.pyc
 *.txt
+*.xml
+*.graph

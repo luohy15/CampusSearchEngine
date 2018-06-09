@@ -1,10 +1,12 @@
-MAX_TXT = 500
+MAX_TXT = 1500
+#  txt_path = "/Users/rv/src/project/search_engine/hwbig/rawdata"
+txt_path = "./build"
 fout = open("html.graph", "w", encoding="utf8")
 i = 1
 while True:
     try:
         print("Reading %d" % i)
-        with open("%s.txt"%i, "r", encoding="utf8") as fin:
+        with open(txt_path + '/' + "%s.txt"%i, "r", encoding="utf8") as fin:
             print("Reading %d" % i)
             lines = fin.readlines()
             if (len(lines) != 5):

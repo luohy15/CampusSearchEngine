@@ -32,7 +32,7 @@ unsigned n_nodes = 0;
 
 #define MAX_FINAME 256
 const char* finame;
-const char* default_finame = "html.graph";
+const char* default_finame = "../html.graph";
 
 typedef struct {
   unsigned t;
