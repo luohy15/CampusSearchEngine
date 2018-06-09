@@ -4,9 +4,8 @@ from bs4 import BeautifulSoup
 from visible import *
 from getlinks import *
 
-data_path = "/home/fuck/rawdata/WEB-20180603124318047-00001-1924~192.168.0.106~8443"
+data_path = "/home/fuck/allraw"
 file2id = {}
-soups = []
 
 assert(data_path[-1] != '/') # human makes mistakes
 
@@ -26,7 +25,6 @@ def remove_id(i):
             return
 
 def build_fileid():
-    global soups
     for root, dirs, files in os.walk(data_path): 
         for fi in files:
             if not (fi.endswith(".html") or fi.endswith(".htm")):
@@ -49,15 +47,10 @@ def build_fileid():
                     remove_id(fid)
                     soup = None
                     fid = -1
-            if fid != -1:
-                soups += [soup]
-                assert(len(soups) == fid)
     for i in file2id:
         print(i, file2id[i])
-    assert(len(soups) == len(file2id))
 
 def parse_files():
-    global soups
     for root, dirs, files in os.walk(data_path): 
         for fi in files:
             print(".", end="")
@@ -74,7 +67,17 @@ def parse_files():
                 url = "http://" + fn[len(data_path)+1:]
                 print(url, file=fout)
                 out = []
-                soup = soups[fid-1]
+                try: # try to load with UTF8
+                    with open(fn, "r") as fin:
+                        fr = fin.read()
+                        soup = BeautifulSoup(fr)
+                except UnicodeDecodeError:
+                    try: # then try to load with cp936
+                        with open(fn, "r", encoding="cp936") as fin:
+                            fr = fin.read()
+                            soup = BeautifulSoup(fr)
+                    except: # damn file encoding, ignore
+                        assert(False)
                 links = links_from_html(soup, url)
                 for link in links:
                     fp = data_path + link[6:] # stupid hack
