@@ -4,29 +4,60 @@ from bs4 import BeautifulSoup
 from visible import *
 from getlinks import *
 
-data_path = "/Users/rv/src/project/search_engine/rawdata"
+data_path = "/home/fuck/rawdata/WEB-20180603124318047-00001-1924~192.168.0.106~8443"
 file2id = {}
-out = {}
+soups = []
+
+assert(data_path[-1] != '/') # human makes mistakes
 
 def get_id(s):
     if s in file2id:
         return file2id[s]
     else:
         file2id[s] = len(file2id) + 1
-        out[file2id[s]] = []
     return file2id[s]
 
+def remove_id(i):
+    print("remove %d" % i)
+    assert(i == len(file2id))
+    for f in file2id:
+        if file2id[f] == i:
+            file2id.pop(f)
+            return
+
 def build_fileid():
+    global soups
     for root, dirs, files in os.walk(data_path): 
         for fi in files:
             if not (fi.endswith(".html") or fi.endswith(".htm")):
                 continue
             print(",", end="")
             sys.stdout.flush()
-            get_id(root+"/"+fi)
+            fn = root+"/"+fi
+            get_id(fn)
+            fid = get_id(fn)
+            try: # try to load with UTF8
+                with open(fn, "r") as fin:
+                    fr = fin.read()
+                    soup = BeautifulSoup(fr)
+            except UnicodeDecodeError:
+                try: # then try to load with cp936
+                    with open(fn, "r", encoding="cp936") as fin:
+                        fr = fin.read()
+                        soup = BeautifulSoup(fr)
+                except: # damn file encoding, ignore
+                    remove_id(fid)
+                    soup = None
+                    fid = -1
+            if fid != -1:
+                soups += [soup]
+                assert(len(soups) == fid)
+    for i in file2id:
+        print(i, file2id[i])
+    assert(len(soups) == len(file2id))
 
 def parse_files():
-    i = 0
+    global soups
     for root, dirs, files in os.walk(data_path): 
         for fi in files:
             print(".", end="")
@@ -34,62 +65,35 @@ def parse_files():
             if not (fi.endswith(".html") or fi.endswith(".htm")):
                 continue
             fn = root+"/"+fi
-            fid = get_id(fn)
-            with open("../DataParse/build/" + str(fid)+".txt", "w") as fout:
-                try:
-                    with open(fn, "r") as fin:
-                        fr = fin.read()
-                        soup = BeautifulSoup(fr)
-                        print(str(fid), file=fout)
-                        url = "http://" + fn[len(data_path)+1:];
-                        print(url, file=fout)
-                        out = []
-                        links = links_from_html(fr, url)
-                        for link in links:
-                            fp = data_path + link[6:]
-                            if fp in file2id:
-                                out.append(str(file2id[fp]))
-                        out = list(set(out))
-                        print(" ".join(out), file=fout)
-                        if soup.title:
-                            if soup.title.string:
-                                print(soup.title.string.replace("\n", ""), file=fout)
-                            else:
-                                print("", file=fout)
-                        else:
-                            print("", file=fout)
-                        print(text_from_html(fr, fid), file=fout)
-                except UnicodeDecodeError:
-                    with open(fn, "r", encoding="cp936") as fin:
-                        fr = fin.read()
-                        soup = BeautifulSoup(fr)
-                        print(str(fid), file=fout)
-                        url = "http://" + fn[len(data_path)+1:];
-                        print(url, file=fout)
-                        out = []
-                        links = links_from_html(fr, url)
-                        for link in links:
-                            fp = data_path + link[6:]
-                            if fp in file2id:
-                                out.append(str(file2id[fp]))
-                        out = list(set(out))
-                        print(" ".join(out), file=fout)
-                        if soup.title:
-                            if soup.title.string:
-                                print(soup.title.string.replace("\n", ""), file=fout)
-                            else:
-                                print("", file=fout)
-                        else:
-                            print("", file=fout)
-                        print(text_from_html(fr, fid), file=fout)
-                except:
-                    pass
+            if fn in file2id:
+                fid = file2id[fn]
+            else:
+                continue # this file is ignored
+            with open("../DataParser/build/" + str(fid)+".txt", "w") as fout:
+                print(str(fid), file=fout)
+                url = "http://" + fn[len(data_path)+1:]
+                print(url, file=fout)
+                out = []
+                soup = soups[fid-1]
+                links = links_from_html(soup, url)
+                for link in links:
+                    fp = data_path + link[6:] # stupid hack
+                    if fp in file2id:
+                        out.append(str(file2id[fp]))
+                out = list(set(out)) # stupid deduplicate
+                print(" ".join(out), file=fout)
+                if soup.title and soup.title.string:
+                    print(soup.title.string.strip(), file=fout)
+                else:
+                    print("", file=fout)
+                print(text_from_html(soup, fid), file=fout)
+
 
 def check_files():
     for i in range(len(file2id)):
         #  print(i+1)
         #  os.system("wc -l " + str(i + 1) + ".txt")
-        count = len(open("../DataParse/build/" + str(i+1)+".txt").readlines())
+        count = len(open("../DataParser/build/" + str(i+1)+".txt").readlines())
         if count != 5:
             print(i + 1, count)
 
