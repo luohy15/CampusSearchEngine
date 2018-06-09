@@ -22,7 +22,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
-public class ImageSearcher {
+public class FileSearcher {
 	private IndexReader reader;
 	private IndexSearcher searcher;
 	private Analyzer analyzer;
@@ -32,7 +32,7 @@ public class ImageSearcher {
 	private static final boolean USE_BM25_SCORER = true;
 	private static final boolean SEGMENT_QUERY = true;
 
-	public ImageSearcher(String indexdir) {
+	public FileSearcher(String indexdir) {
 		analyzer = new IKAnalyzer();
 		try {
 			reader = IndexReader.open(FSDirectory.open(new File(indexdir)));
@@ -53,10 +53,6 @@ public class ImageSearcher {
 			String qs = term.toString();
 			System.out.println("QS: " + qs);
 			SimpleQuery sq = new SimpleQuery(new Term("body", qs), avgBodyLen);
-			sq.setImageSearcher(this);
-			rv.add(sq, BooleanClause.Occur.SHOULD);
-			sq = new SimpleQuery(new Term("title", qs), avgTitleLen);
-			sq.setImageSearcher(this);
 			rv.add(sq, BooleanClause.Occur.SHOULD);
 		}
 		analyzer.close();
@@ -72,7 +68,6 @@ public class ImageSearcher {
 				query = genMultiFieldBM25Query(queryString);
 			} else if (USE_BM25_SCORER) {
 				query = new SimpleQuery(term, avgTitleLen);
-				((SimpleQuery) query).setImageSearcher(this);
 			} else {
 				query = new TermQuery(term);
 			}
@@ -112,10 +107,10 @@ public class ImageSearcher {
 	}
 
 	public static void main(String[] args) {
-		ImageSearcher search = new ImageSearcher("forIndex/index");
-		search.loadGlobals("forIndex/global.txt");
+		FileSearcher search = new FileSearcher("fileIndex/index");
+		search.loadGlobals("fileIndex/global.txt");
 
-		TopDocs results = search.searchQuery("计算机", 400);
+		TopDocs results = search.searchQuery("interactive", 400);
 		ScoreDoc[] hits = results.scoreDocs;
 		for (int i = 0; i < hits.length; i++) { // output raw format
 			Document doc = search.getDoc(hits[i].doc);

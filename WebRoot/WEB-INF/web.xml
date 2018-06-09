@@ -6,9 +6,18 @@
   <servlet-name>ImageServer</servlet-name>
   <servlet-class>ImageServer</servlet-class>
  </servlet>
+ <servlet>
+  <display-name>FileServer</display-name>
+  <servlet-name>FileServer</servlet-name>
+  <servlet-class>FileServer</servlet-class>
+ </servlet>
  <servlet-mapping>
   <servlet-name>ImageServer</servlet-name>
   <url-pattern>/servlet/ImageServer</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>FileServer</servlet-name>
+  <url-pattern>/servlet/FileServer</url-pattern>
  </servlet-mapping>
  <welcome-file-list>
   <welcome-file>index.jsp</welcome-file>

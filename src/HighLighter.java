@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -43,11 +44,24 @@ public class HighLighter {
 	private static final String HL_SEP = "...";
 
 	public String highlight(String text, boolean full) {
+		String ltext = text.toLowerCase();
 		if (full) {
+			StringBuilder psb = new StringBuilder();
+			psb.append("(?i)");
+			boolean first = true;
 			for (String t : terms) {
-				text = text.replace(t, "<span style=\"color:red;\">" + t + "</span>");
+				if (first) {
+					first = false;
+					psb.append("(");
+					psb.append(Pattern.quote(t));
+					psb.append(")");
+				} else {
+					psb.append("|(");
+					psb.append(Pattern.quote(t));
+					psb.append(")");
+				}
 			}
-			return text;
+			return text.replaceAll(psb.toString(), "<span style=\"color: red\">$0</span>");
 		} else {
 			// holy shxt after writing so much C, I forgot how to write OO code
 			// so below is written actually in C
@@ -57,11 +71,11 @@ public class HighLighter {
 			for (String t : terms) {
 				int idx = 0;
 				while (true) {
-					idx = text.indexOf(t, idx);
+					idx = ltext.indexOf(t.toLowerCase(), idx);
 					if (idx == -1)
 						break;
 					raw_intvls.add(new Pair<Integer, Integer>(Math.max(0, idx - N_CONTEXT),
-							Math.min(text.length(), idx + t.length() + N_CONTEXT)));
+							Math.min(ltext.length(), idx + t.length() + N_CONTEXT)));
 					idx += t.length();
 				}
 			}
