@@ -3,15 +3,39 @@
 [TOC]
 
 ## 基础配置
-需要依赖的外部程序有
-* `antiword`
-* python库 `pdfminer3k`
-* python库 `python-docx`
-* python库 `docx2txt`
 
-修改路径...
+### 依赖
+* 数据抓取
+    * `heritrix3`
+    * `The Unarchiver`
+* 数据索引
+    * `antiword`
+    * python3库 `BeautifulSoup``pdfminer3k``python-docx``docx2txt`
 
-TODO
+### 运行
+```bash
+# 抓取,若数据量较大可考虑在外置硬盘建立项目
+参考数据抓取部分配置heritrix抓取文件
+
+# 索引,生成索引结果至DataParse/build
+修改rawdata/totxt.py,rawdata/totxt2.py中data_path为对应路径
+cd DataParser
+mkdir build
+cd ../rawdata
+python3 totxt.py
+python3 totxt2.py
+
+# 链接结构分析,生成结果至input/html.xml和input/file.xml
+cd ../DataParser/build
+python3 ../txts2graph.py
+cmake .. && make
+./pr
+python3 ../genxml.py
+python3 ../genfilexml.py
+
+# myeclipse,tomcat配置
+参考[图片搜索作业](https://github.com/luohy15/ImageSearch/blob/master/README.md)的配置过程,新增的操作见内容检索部分
+```
 
 ------------------------------------------------------------------------------
 ## 数据抓取
@@ -58,12 +82,6 @@ TODO
 未在Windows上找到合适的提取warc的方法,使用OSX上的`The Unarchiver`提取
 
 由于前期设置压缩包最大为1G,所以`ls -d W*/ | xargs -I {} cp -r {} all`将10G的解压后文件至同一个目录下
-
-### 参考
-
-[用Solr构建垂直搜索引擎](https://fliaping.gitbooks.io/create-your-vertical-search-engine-with-solr/content/crawl-web-page-by-using-heritrix.html)
-
-[THUSearchEngine](https://github.com/ChenGuangbinTHU/THUSearchEngine/blob/master/WebPreprocess/crawler-beans.cxml)
 
 ------------------------------------------------------------------------------
 ## 数据索引
@@ -185,6 +203,7 @@ TODO
 
 ------------------------------------------------------------------------------
 ## 参考资料
+* heritrix环境配置参考了[用Solr构建垂直搜索引擎](https://fliaping.gitbooks.io/create-your-vertical-search-engine-with-solr/content/crawl-web-page-by-using-heritrix.html)和[THUSearchEngine](https://github.com/ChenGuangbinTHU/THUSearchEngine/blob/master/WebPreprocess/crawler-beans.cxml)
 * html 到中间 txt 再重用 xml 的架构参考了 [THUSearch](https://github.com/Terranlee/THUSearch).
 * 前端参考了 Bootstrap 的 [Cover](https://getbootstrap.com/docs/4.1/examples/cover/)
 * 图片背景的设计参考了 [Bing](cn.bing.com)
