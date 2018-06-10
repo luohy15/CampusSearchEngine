@@ -58,7 +58,7 @@ public class FileServer extends HttpServlet {
 			System.out.println(queryString);
 			System.out.println(URLDecoder.decode(queryString, "utf-8"));
 			System.out.println(URLDecoder.decode(queryString, "gb2312"));
-			TopDocs results = search.searchQuery(queryString, 100);
+			TopDocs results = search.searchQuery(queryString, 400);
 			HighLighter hl = new HighLighter(queryString);
 			String[] titles = null;
 			String[] urls = null;

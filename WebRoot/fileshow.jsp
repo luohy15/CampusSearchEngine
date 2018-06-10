@@ -5,6 +5,7 @@ response.setCharacterEncoding("utf-8");
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 String imagePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/";
+String bgimgno = String.valueOf(new Random().nextInt(5));
 %>
 
 <!DOCTYPE html>

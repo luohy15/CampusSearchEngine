@@ -1,4 +1,4 @@
-MAX_TXT = 7000
+MAX_TXT = 120000
 txt_path = "."
 fout = open("html.graph", "w", encoding="utf8")
 i = 1
@@ -20,6 +20,8 @@ while True:
         i += 1
         if i > MAX_TXT: 
             break
+        if i % 1000 == 0:
+            print(">>%d"%i)
     except:
         print("Totally %d files found" % (i-1))
         break

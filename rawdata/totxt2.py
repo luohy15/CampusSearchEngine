@@ -3,7 +3,7 @@ import sys
 import shlex
 import subprocess 
 
-data_path = "/home/fuck/rawdata/WEB-20180603124318047-00001-1924~192.168.0.106~8443"
+data_path = "/home/fuck/allraw"
 pdf_parser = "./pdf2txt"
 doc_parser = "antiword"
 docx_parser = "./docx2txt"
@@ -58,9 +58,26 @@ def handledoc():
             n_doc += 1
             fn = root+"/"+fi
             url = "http://" + fn[len(data_path)+1:]
-            output = subprocess.check_output([doc_parser, fn])
+            try:
+                output = subprocess.check_output([doc_parser, fn])
+            except:
+                n_doc -= 1
+                print("failed")
+                continue
             print("%d ok" % n_doc)
-            output = output.decode("utf8")
+            try:
+                output = output.decode("utf8")
+            except UnicodeDecodeError:
+                try:
+                    output = output.decode("cp936")
+                except:
+                    n_doc -= 1
+                    print("failed")
+                    continue
+            except:
+                n_doc -= 1
+                print("failed")
+                continue
             output = " ".join(output.split())
             with open(doc_output_fn(n_doc), "w") as fout:
                 print(url.strip(), file=fout)
@@ -85,11 +102,23 @@ def handledocx():
                 print("failed")
                 continue
             print("%d ok" % n_docx)
-            output = output.decode("utf8")
+            try:
+                output = output.decode("utf8")
+            except UnicodeDecodeError:
+                try:
+                    output = output.decode("cp936")
+                except:
+                    n_docx -= 1
+                    print("failed")
+                    continue
+            except:
+                n_docx -= 1
+                print("failed")
+                continue
             output = " ".join(output.split())
             with open(docx_output_fn(n_docx), "w") as fout:
                 print(url.strip(), file=fout)
                 print(output.strip(), file=fout)
 
 if __name__ == "__main__":
-    handlepdf()
+    handledocx()
