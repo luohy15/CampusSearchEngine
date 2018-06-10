@@ -10,7 +10,7 @@
     * `The Unarchiver`
 * 数据索引
     * `antiword`
-    * python3库 `BeautifulSoup``pdfminer3k``python-docx``docx2txt`
+    * python3库 `BeautifulSoup` `pdfminer3k` `python-docx` `docx2txt`
 
 ### 运行
 ```bash
