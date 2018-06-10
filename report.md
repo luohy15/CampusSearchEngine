@@ -57,6 +57,19 @@
 
 ### html解析
 
+遍历数据目录,建立file->id的dict,采用编码探测方案,首先用UTF8,若失败则尝试cp936,若还是失败则忽略这个file,使用`BeautifulSoup`解析正确解码的html文件,以如下格式输出文档信息到`id.txt`中:
+
+```
+id.txt
+
+lineno		content
+1 		id
+2		url
+3		out-edge target ids, space seperated
+4		title
+5		content, newlines removed
+```
+
 ### pdf解析
 
 ### doc,docx解析
