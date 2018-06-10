@@ -13,29 +13,31 @@
     * python3库 `BeautifulSoup` `pdfminer3k` `python-docx` `docx2txt`
 
 ### 运行
-```bash
-# 抓取,若数据量较大可考虑在外置硬盘建立项目
+#### 抓取,若数据量较大可考虑在外置硬盘建立项目
 参考数据抓取部分配置heritrix抓取文件
 
-# 索引,生成索引结果至DataParse/build
-修改rawdata/totxt.py,rawdata/totxt2.py中data_path为对应路径
+#### 索引,生成索引结果至DataParse/build
+修改rawdata/totxt.py,rawdata/totxt2.py中`data_path`为对应路径
+```
 cd DataParser
 mkdir build
 cd ../rawdata
 python3 totxt.py
 python3 totxt2.py
+```
 
-# 链接结构分析,生成结果至input/html.xml和input/file.xml
+#### 链接结构分析,生成结果至input/html.xml和input/file.xml
+```
 cd ../DataParser/build
 python3 ../txts2graph.py
 cmake .. && make
 ./pr
 python3 ../genxml.py
 python3 ../genfilexml.py
-
-# myeclipse,tomcat配置
-参考[图片搜索作业](https://github.com/luohy15/ImageSearch/blob/master/README.md)的配置过程,新增的操作见内容检索部分
 ```
+
+#### myeclipse,tomcat配置
+参考[图片搜索作业](https://github.com/luohy15/ImageSearch/blob/master/README.md)的配置过程
 
 ------------------------------------------------------------------------------
 ## 数据抓取
